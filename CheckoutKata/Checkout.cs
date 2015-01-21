@@ -1,7 +1,6 @@
 namespace CheckoutKata
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -17,38 +16,44 @@ namespace CheckoutKata
 
         public const string KeyEgg = "Egg";
 
-        private static readonly IDictionary<string, double> PriceDict = new Dictionary<string, double>()
-                                                                    {
-                                                                        { KeyApple, 0.3 },
-                                                                        { KeyBeans, 0.5 },
-                                                                        { KeyCoke, 1.8 },
-                                                                        {KeyDeodorant, 2.5},
-                                                                        {KeyEgg, 1.2},
-                                                                    };
+        static readonly IDictionary<string, double> PriceDict
+                                            = new Dictionary<string, double>
+                                                    {
+                                                        { KeyApple, 0.3 },
+                                                        { KeyBeans, 0.5 },
+                                                        { KeyCoke, 1.8 },
+                                                        {KeyDeodorant, 2.5},
+                                                        {KeyEgg, 1.2},
+                                                    };
 
 
-        private static readonly IDictionary<string, Tuple<int, double>> DiscountsDict =
-            new Dictionary<string, Tuple<int, double>>
-                {
-                    { KeyApple, new Tuple<int, double>(4, 0.2) },
-                    { KeyDeodorant, new Tuple<int, double>(2, 0.5) },
-                    { KeyEgg, new Tuple<int, double>(3, 0.6) },
-                };
+        private static readonly IDictionary<string[], Tuple<int, double>> ItemCountDiscountDict =
+                                new Dictionary<string[], Tuple<int, double>>
+                                    {
+                                        { new[] { KeyApple }, new Tuple<int, double>(4, 0.2) },
+                                        { new[] { KeyDeodorant }, new Tuple<int, double>(2, 0.5) },
+                                        { new[] { KeyEgg }, new Tuple<int, double>(3, 0.6) },
+                                        { new[] { KeyBeans, KeyCoke, }, new Tuple<int, double>(1, 0.3) },
+                                    };
 
         public double Scan(params string[] items)
         {
             var sum = items.Sum(x => PriceDict[x]);
 
-            DiscountsDict.ToList().ForEach(
-                discount =>
+            ItemCountDiscountDict.ToList().ForEach(
+                itemCountDiscount =>
                 {
-                    var itemCount = items.Count(x => x == discount.Key);
-                    var itemDiscountCount = discount.Value.Item1;
+                    var disountedItemsCountList =
+                        items.Where(itemCountDiscount.Key.Contains).GroupBy(x => x).Select(x => x.Count()).ToList();
 
-                    while (itemCount >= itemDiscountCount)
+                    var validDiscountCount = disountedItemsCountList.Count >= itemCountDiscount.Key.Count()
+                                                 ? disountedItemsCountList.Min()
+                                                 : 0;
+
+                    while (validDiscountCount >= itemCountDiscount.Value.Item1)
                     {
-                        sum -= discount.Value.Item2;
-                        itemCount -= itemDiscountCount;
+                        sum -= itemCountDiscount.Value.Item2;
+                        validDiscountCount -= itemCountDiscount.Value.Item1;
                     }
                 });
 

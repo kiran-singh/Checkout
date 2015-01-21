@@ -141,8 +141,8 @@ namespace CheckoutKata.UnitTests
             Assert.AreEqual(expected, Math.Round(actual, 2));
         }
 
-        [TestCase(11.5d, 
-                Checkout.KeyDeodorant, 
+        [TestCase(11.5d,
+                Checkout.KeyDeodorant,
                 Checkout.KeyDeodorant,
                 Checkout.KeyApple,
                 Checkout.KeyApple,
@@ -155,7 +155,7 @@ namespace CheckoutKata.UnitTests
                 Checkout.KeyApple,
                 Checkout.KeyApple,
                 Checkout.KeyBeans)]
-        [TestCase(8.8d, 
+        [TestCase(8.5d,
                 Checkout.KeyApple,
                 Checkout.KeyApple,
                 Checkout.KeyApple,
@@ -168,7 +168,7 @@ namespace CheckoutKata.UnitTests
                 Checkout.KeyApple,
                 Checkout.KeyBeans,
                 Checkout.KeyCoke)]
-        [TestCase(11.1d, 
+        [TestCase(10.8d,
                 Checkout.KeyApple,
                 Checkout.KeyApple,
                 Checkout.KeyApple,
@@ -181,6 +181,22 @@ namespace CheckoutKata.UnitTests
                 Checkout.KeyApple,
                 Checkout.KeyBeans,
                 Checkout.KeyCoke)]
+        [TestCase(12.8d,
+                Checkout.KeyApple,
+                Checkout.KeyApple,
+                Checkout.KeyApple,
+                Checkout.KeyApple,
+                Checkout.KeyDeodorant,
+                Checkout.KeyDeodorant,
+                Checkout.KeyEgg,
+                Checkout.KeyEgg,
+                Checkout.KeyEgg,
+                Checkout.KeyApple,
+                Checkout.KeyBeans,
+                Checkout.KeyBeans,
+                Checkout.KeyCoke,
+                Checkout.KeyCoke
+                )]
         public void Scan_MultipleItems_ResultAsExpected(double expected, params string[] items)
         {
             // Arrange
